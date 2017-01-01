@@ -1,0 +1,18 @@
+{
+  "localFileserver": {
+    "classname": "ChunkedFileServer",
+    "options": {
+      "url": "http://localhost:3000"
+    }
+  },
+  "s3Fileserver": {
+    "classname": "S3FileServer",
+    "options": {
+      "creds": {
+        "accessKeyId": "xxxxxxxxxxxxxx",
+        "secretAccessKey": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",
+        "region": "us-west-2"
+      }
+    }
+  }
+}

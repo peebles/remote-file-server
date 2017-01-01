@@ -1,0 +1,29 @@
+{
+  "name": "remote-file-server",
+  "version": "0.0.1",
+  "description": "A remote file server that can be programmed to use AWS S3 or a custom daemon",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/peebles/remote-file-system.git"
+  },
+  "author": "Andrew Peebles",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/peebles/remote-file-system/issues"
+  },
+  "homepage": "https://github.com/peebles/remote-file-system#readme",
+  "dependencies": {
+    "aws-sdk": "^2.7.20",
+    "busboy": "^0.2.13",
+    "express": "^4.14.0",
+    "mkdirp": "^0.5.1",
+    "request": "^2.79.0",
+    "s3": "^4.4.0",
+    "s3-upload-stream": "^1.0.7",
+    "stream-meter": "^1.0.4"
+  }
+}
