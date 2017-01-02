@@ -33,9 +33,11 @@ then "my-uploads" is the bucket and "images/img.png" is the key.  For S3, the "m
 
 The callback will return an error, or the number of bytes uploaded and the native url where this file was stored.
 
-### listing( root, function( err, listing ) )
+### listing( root, [prefix,] function( err, listing ) )
 
-The `listing` result will be an array of { name:, size: }.
+The `listing` result will be an array of { name:, size: }.  The `prefix` acts like the S3 documented "Prefix"
+parameter.  That is, you always get a recursive listing of files from `root` (a bucket) and if prefix is non-null,
+only those files (keys) that begin with `prefix`.
 
 ### remove( root, filename, function( err ) )
 

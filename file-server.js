@@ -77,21 +77,18 @@ app.post( '/', function( req, res, next ) {
 
 app.get( '/dir', function( req, res, next ) {
   var files = [];
-  if ( ! fs.existsSync( path.join( basePath, req.query.category ) ) ) return res.json( [] );
-  fs.readdir( path.join( basePath, req.query.category ), function( err, list ) {
+  var fullpath = path.join( basePath, req.query.category );
+  if ( req.query.prefix ) fullpath = path.join( fullpath, req.query.prefix );
+  if ( ! fs.existsSync( fullpath ) ) return res.json( [] );
+  function ignoreFcn( file, stats ) {
+    return stats.isDirectory() && path.basename(file)[0] == ".";
+  }
+  require( 'recursive-readdir' )( fullpath, [ ignoreFcn ], function( err, list ) {
     if ( err ) return next( err );
-    if ( list && list.length ) {
-      list.forEach( function( name ) {
-	var stats = fs.statSync( path.join( basePath, req.query.category, name ) );
-	if ( stats.isFile() && name[0] !== '.' ) {
-	  files.push({
-	    name: name,
-	    size: stats.size,
-	  });
-	}
-      });
-    }
-    res.json( files );
+    res.json( list.map( function( f ) {
+      var s = fs.statSync( f );
+      return { name: f.replace( path.join( basePath, req.query.category )+'/', '' ), size: s.size };
+    }));
   });
 });
 
@@ -100,21 +97,21 @@ app.get( '/dir', function( req, res, next ) {
 // wget http://localhost:3000/ca-ca/dist.zip
 //
 app.get( '*', function( req, res, next ) {
-  var filename = req.path;
+  var filename = decodeURIComponent( req.path );
   var fullname = path.join( basePath, filename );
   if ( req.query.category ) fullname = path.join( basePath, req.query.category, filename );
   // Used to set content-disposition, but that overrides any down stream proxy that is
   // trying to over write it!
   //res.setHeader( 'Content-disposition', 'attachment; filename=' + path.basename( fullname ) );
   if ( ! fs.existsSync( fullname ) )
-    return res.status( 400 ).send( 'file does not exist' );
+    return res.status( 400 ).send( 'file does not exist: ' + fullname  );
 
   var strm = fs.createReadStream( fullname );
   strm.pipe( res );
 });
 
 app.delete( '*', function( req, res, next ) {
-  var filename = req.path;
+  var filename = decodeURIComponent( req.path );
   var fullname = path.join( basePath, filename );
   if ( req.query.category ) fullname = path.join( basePath, req.query.category, filename );
   fs.unlink( fullname, function( err ) {
